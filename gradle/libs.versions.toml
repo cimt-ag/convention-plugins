@@ -1,0 +1,36 @@
+[versions]
+args4j = "2.33"
+commonscli = "1.5.0"
+junit = "5.8.2"
+mockito = "1.9.5"
+slf4j = "1.7.22"
+logback = "1.1.2"
+rouge = "3.15.0"
+diagram = "2.2.2"
+spotbugs = "5.0.9"
+asciidoctor = "3.3.2"
+cimtConventions = "1.0.0"
+
+[libraries]
+rouge = { module = "rubygems:rouge", version.ref = "rouge" }
+diagram = { module = "rubygems:asciidoctor-diagram", version.ref = "diagram" }
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+logbackCore = { module = "ch.qos.logback:logback-core", version.ref = "logback" }
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+mockito = { module = "org.mockito:mockito-all", version.ref = "mockito" }
+args4j = { module = "args4j:args4j", version.ref = "args4j" }
+commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
+
+[bundles]
+logback = ["logbackCore", "logbackClassic"]
+
+[plugins]
+spotbugs = { id = "com.github.spotbugs",  version.ref = "spotbugs" }    
+sonarqube = { id = "org.sonarqube", version = "3.3" }
+asciidoctorPdf = { id = "org.asciidoctor.jvm.pdf", version.ref = "asciidoctor" }
+asciidoctorConvert = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoctor" }
+asciidoctorGems = { id = "org.asciidoctor.jvm.gems", version.ref = "asciidoctor" }
+javaConvention = { id = "de.cimt.java-conventions", version.ref = "cimtConventions" }
+libraryConvention = { id = "de.cimt.library-conventions", version.ref = "cimtConventions" }
+asciidoctorConvention = { id = "de.cimt.asciidoctor-conventions", version.ref = "cimtConventions" }

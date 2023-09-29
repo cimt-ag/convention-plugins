@@ -1,0 +1,69 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'jacoco'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco-report-aggregation'
+    id 'com.github.spotbugs' version '5.0.9'
+    id 'maven-publish'
+}
+
+repositories  {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+	// Add plugin implementation as dependecies
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm-gems:3.3.2"
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm:3.3.2"
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm-pdf:3.3.2"
+	implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.9'
+	
+	// Test framework
+	testImplementation platform("org.spockframework:spock-bom:2.1-groovy-3.0")
+	testImplementation 'org.spockframework:spock-core'
+}
+
+def IGNORE_FAILURES=true
+
+final BUILD_DATE = new Date().format('dd.MM.yyyy').toString()
+
+publishing {
+    publications {
+    }
+    repositories {
+    }
+}
+
+tasks.withType(Checkstyle) {
+	ignoreFailures = IGNORE_FAILURES
+	showViolations = false
+	configFile = file("src/main/resources/checkstyle.xml")
+}
+
+pmd {
+	ignoreFailures = IGNORE_FAILURES
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports.xml.required = true
+}
+
+spotbugs {
+	ignoreFailures = IGNORE_FAILURES
+	showStackTraces = false
+	showProgress = true
+	effort = 'default'
+	reportLevel = 'default'
+}
+
+tasks.named('publish') {
+	dependsOn('check')
+}

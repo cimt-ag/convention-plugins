@@ -1,0 +1,44 @@
+= Projektbeschreibung cimt-conventions
+:author: Thomas Peetz
+:email: <thomas.peetz@thpeetz.de>
+:doctype: article
+:sectnums:
+:sectnumlevels: 4
+:toc:
+:toclevels: 4
+:table-caption!:
+:counter: table-number: 0
+
+[title="Dokumenthistorie", id="Table-{counter:table-number}", options="header"]
+|===
+| Version | Datum      | Autor        | Änderungsgrund / Bemerkungen
+| 1.0.0   | 04.08.2022 | Thomas Peetz | Ersterstellung
+|===
+
+== Einführung
+
+== Zweck
+
+=== Anwendungsfälle
+
+=== Zielgruppen
+
+=== Anforderungen
+
+[appendix, bibliography]
+== Referenzen
+
+[appendix, index]
+== Index
+
+[appendix, glossary]
+== Glossar
+
+[appendix]
+== Verzeichnisse
+
+=== Abbildungsverzeichnis
+
+=== Tabellenverzeichnis
+
+<<Table-1, Tabelle 1>> <<Table-1>>
