@@ -50,6 +50,11 @@ final BUILD_DATE = new Date().format('dd.MM.yyyy').toString()
 
 publishing {
     publications {
+        doc(MavenPublication) {
+            groupId = group + '.docs'
+            artifactId = project.name
+            artifact pdfArtifact
+        }
     }
     repositories {
     }
@@ -85,6 +90,30 @@ spotbugs {
 
 tasks.named('publish') {
 	dependsOn('check')
+}
+
+asciidoctorPdf {
+	dependsOn asciidoctorGemsPrepare
+
+	baseDirFollowsSourceFile()
+
+	asciidoctorj {
+		requires 'rouge', 'asciidoctor-diagram'
+		attributes 'build-gradle':       file('build.gradle'),
+				   'endpoint-url':       'https://www.cimt-ag.de',
+				   'source-highlighter': 'rouge',
+				   'imagesdir':          './images',
+				   'toc':                'left',
+				   'toc-title':          'Inhaltsverzeichnis',
+				   'revdate':            BUILD_DATE,
+				   'revnumber':          { project.version.toString() },
+				   'revremark':          'Entwurf',
+				   'chapter-label':      '',
+				   'icons':              'font',
+				   'idprefix':           'id_',
+				   'idseparator':        '-',
+				   'docinfo1':           ''
+	}
 }
 
 wrapper {
