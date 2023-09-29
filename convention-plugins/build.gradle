@@ -2,15 +2,8 @@ plugins {
     id 'groovy-gradle-plugin'
     id 'jacoco'
     id 'checkstyle'
-    id 'pmd'
     id 'jacoco-report-aggregation'
-    id 'com.github.spotbugs' version '5.0.9'
     id 'maven-publish'
-}
-
-repositories  {
-    mavenCentral()
-    gradlePluginPortal()
 }
 
 dependencies {
@@ -42,10 +35,6 @@ tasks.withType(Checkstyle) {
 	configFile = file("src/main/resources/checkstyle.xml")
 }
 
-pmd {
-	ignoreFailures = IGNORE_FAILURES
-}
-
 test {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
@@ -54,14 +43,6 @@ test {
 jacocoTestReport {
 	dependsOn test
 	reports.xml.required = true
-}
-
-spotbugs {
-	ignoreFailures = IGNORE_FAILURES
-	showStackTraces = false
-	showProgress = true
-	effort = 'default'
-	reportLevel = 'default'
 }
 
 tasks.named('publish') {

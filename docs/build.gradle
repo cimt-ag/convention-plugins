@@ -11,8 +11,8 @@ repositories  {
 }
 
 dependencies {
-	asciidoctorGems 'rubygems:rouge:3.15.0'
-	asciidoctorGems 'rubygems:asciidoctor-diagram:2.2.2'
+	asciidoctorGems libs.rouge
+	asciidoctorGems libs.diagram
 }
 
 def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/" + project.name + ".pdf")
