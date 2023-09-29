@@ -1,0 +1,121 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'jacoco'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco-report-aggregation'
+    alias(libs.plugins.spotbugs)
+    alias(libs.plugins.asciidoctorPdf)
+    alias(libs.plugins.asciidoctorConvert)
+    alias(libs.plugins.asciidoctorGems)
+    id 'maven-publish'
+}
+
+repositories  {
+	ruby.gems()
+	mavenCentral()
+	maven {
+		url "https://nexus.thpeetz.de/nexus/content/groups/public/"
+	}
+    gradlePluginPortal()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+	asciidoctorGems libs.rouge
+	asciidoctorGems libs.diagram
+	
+	// Add plugin implementation as dependecies
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm-gems:3.3.2"
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm:3.3.2"
+	implementation "org.asciidoctor:asciidoctor-gradle-jvm-pdf:3.3.2"
+	implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.9'
+	
+	// Test framework
+	testImplementation platform("org.spockframework:spock-bom:2.1-groovy-3.0")
+	testImplementation 'org.spockframework:spock-core'
+}
+
+def IGNORE_FAILURES=true
+
+def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/" + project.name + ".pdf")
+def pdfArtifact = artifacts.add('archives', pdfFile.get().asFile) {
+	type 'pdf'
+	builtBy asciidoctorPdf
+}
+
+final BUILD_DATE = new Date().format('dd.MM.yyyy').toString()
+
+publishing {
+    publications {
+        doc(MavenPublication) {
+            groupId = group + '.docs'
+            artifactId = project.name
+            artifact pdfArtifact
+        }
+    }
+    repositories {
+    }
+}
+
+tasks.withType(Checkstyle) {
+	ignoreFailures = IGNORE_FAILURES
+	showViolations = false
+	configFile = file("src/main/resources/checkstyle.xml")
+}
+
+pmd {
+	ignoreFailures = IGNORE_FAILURES
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports.xml.required = true
+}
+
+spotbugs {
+	ignoreFailures = IGNORE_FAILURES
+	showStackTraces = false
+	showProgress = true
+	effort = 'default'
+	reportLevel = 'default'
+}
+
+tasks.named('publish') {
+	dependsOn('check')
+}
+
+asciidoctorPdf {
+	dependsOn asciidoctorGemsPrepare
+
+	baseDirFollowsSourceFile()
+
+	asciidoctorj {
+		requires 'rouge', 'asciidoctor-diagram'
+		attributes 'build-gradle':       file('build.gradle'),
+				   'endpoint-url':       'https://www.cimt-ag.de',
+				   'source-highlighter': 'rouge',
+				   'imagesdir':          './images',
+				   'toc':                'left',
+				   'toc-title':          'Inhaltsverzeichnis',
+				   'revdate':            BUILD_DATE,
+				   'revnumber':          { project.version.toString() },
+				   'revremark':          'Entwurf',
+				   'chapter-label':      '',
+				   'icons':              'font',
+				   'idprefix':           'id_',
+				   'idseparator':        '-',
+				   'docinfo1':           ''
+	}
+}
+
+wrapper {
+	gradleVersion = "8.3"
+}
