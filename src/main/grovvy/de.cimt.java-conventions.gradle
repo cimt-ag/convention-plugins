@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'jacoco-report-aggregation'
+    id 'checkstyle'
+	id "com.github.spotbugs"
+    id 'pmd'
+}
+
+// Projects have the 'de.cimt' group by convention
+group = 'de.cimt'
+
+repositories {
+    maven {
+		url "https://nexus.thpeetz.de/nexus/content/groups/public/"
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:deprecation"
+	options.encoding = "UTF-8"
+}
+
+tasks.withType(Javadoc) {
+	options.encoding = "UTF-8"
+}
+
+tasks.withType(Test) {
+	systemProperty "file.encoding", "UTF-8"
+	useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports.xml.required = true
+}
+
+spotbugs {
+    ignoreFailures = false
+    showStackTraces = true
+    showProgress = true
+    effort = 'default'
+    reportLevel = 'default'
+}
+
+tasks.matching {task -> task.name.startsWith('spotbugs')}.forEach {
+	it.reports {
+		html.required = true
+		xml.required = true
+	}
+}
+
+tasks.withType(Checkstyle) {
+    config = resources.text.fromString(de.cimt.devops.CheckstyleUtil.getCheckstyleConfig("/checkstyle.xml"))
+    maxWarnings = 0
+    ignoreFailures = false
+    showViolations = true
+    reports.xml.required = true
+}
+
+pmd {
+    ignoreFailures = true
+}
+
+test.finalizedBy jacocoTestReport
