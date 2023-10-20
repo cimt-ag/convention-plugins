@@ -13,10 +13,8 @@ plugins {
 
 repositories  {
     ruby.gems()
+    mavenLocal()
     mavenCentral()
-    maven {
-        url "https://nexus.thpeetz.de/nexus/content/groups/public/"
-    }
     gradlePluginPortal()
     maven {
         url "https://plugins.gradle.org/m2/"
