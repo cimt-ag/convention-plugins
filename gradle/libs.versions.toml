@@ -20,6 +20,10 @@ junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 mockito = { module = "org.mockito:mockito-all", version.ref = "mockito" }
 args4j = { module = "args4j:args4j", version.ref = "args4j" }
 commonscli = { module = "commons-cli:commons-cli", version.ref = "commonscli" }
+asciidoctorGradleJvmGems = { module = "org.asciidoctor:asciidoctor-gradle-jvm-gems", version.ref= "asciidoctor" }
+asciidoctorGradleJvm = { module = "org.asciidoctor:asciidoctor-gradle-jvm", version.ref= "asciidoctor" }
+asciidoctorGradleJvmPdf = { module = "org.asciidoctor:asciidoctor-gradle-jvm-pdf", version.ref= "asciidoctor" }
+spotbugsGradlePlugin = { module = "com.github.spotbugs.snom:spotbugs-gradle-plugin", version.ref = "spotbugs" }
 
 [bundles]
 logback = ["logbackCore", "logbackClassic"]

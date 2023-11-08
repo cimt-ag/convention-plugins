@@ -12,18 +12,12 @@
 [title="Dokumenthistorie", id="Table-{counter:table-number}", options="header"]
 |===
 | Version | Datum      | Autor        | Änderungsgrund / Bemerkungen
-| 1.0.0   | 29.09.2023 | Thomas Peetz | Ersterstellung
+| 1.0.0   | 06.11.2023 | Thomas Peetz | Ersterstellung
 |===
 
 == Einführung
 
-== Zweck
-
-=== Anwendungsfälle
-
-=== Zielgruppen
-
-=== Anforderungen
+=== Zweck
 
 [appendix, bibliography]
 == Referenzen
