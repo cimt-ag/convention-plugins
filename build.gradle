@@ -1,0 +1,76 @@
+plugins {
+    id 'groovy-gradle-plugin'
+    id 'jacoco'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco-report-aggregation'
+    alias(libs.plugins.spotbugs)
+    id 'maven-publish'
+}
+
+repositories  {
+	mavenCentral()
+	gradlePluginPortal()
+	    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    implementation libs.asciidoctorGradleJvmGems
+    implementation libs.asciidoctorGradleJvm
+    implementation libs.asciidoctorGradleJvmPdf
+    implementation libs.spotbugsGradlePlugin
+    testImplementation platform("org.spockframework:spock-bom:2.1-groovy-3.0")
+    testImplementation 'org.spockframework:spock-core'
+}
+
+def IGNORE_FAILURES=true
+
+publishing {
+    repositories {
+        maven {
+			name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/cimt-ag/convention-plugins")
+            credentials(PasswordCredentials)
+        }
+    }
+}
+
+tasks.withType(Checkstyle) {
+	ignoreFailures = IGNORE_FAILURES
+	showViolations = false
+	configFile = file("src/main/resources/checkstyle.xml")
+}
+
+pmd {
+	ignoreFailures = IGNORE_FAILURES
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports.xml.required = true
+}
+
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.Effort
+spotbugs {
+	ignoreFailures = IGNORE_FAILURES
+	showStackTraces = false
+	showProgress = true
+	effort = Effort.valueOf('DEFAULT')
+    reportLevel = Confidence.valueOf('DEFAULT')
+}
+
+tasks.named('publish') {
+	dependsOn('check')
+}
+
+wrapper {
+    gradleVersion = libs.versions.gradle.get()
+}

@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'de.cimt.java-conventions'
+}
+
+publishing {
+	publications {
+		library(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+	}
+}
+
+// The project requires libraries to have a README containing sections configured below
+def readmeCheck = tasks.register('readmeCheck', de.cimt.devops.ReadmeVerificationTask) {
+	// Expect the README in the project directory
+	readme = layout.projectDirectory.file("README.md")
+	// README must contain a Service API header
+	readmePatterns = ['^## API$', '^## Changelog$']
+}
+
+tasks.named('check') { dependsOn(readmeCheck) }

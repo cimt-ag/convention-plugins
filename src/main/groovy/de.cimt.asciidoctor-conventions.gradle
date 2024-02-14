@@ -1,0 +1,62 @@
+plugins {
+	id 'maven-publish'
+	id 'org.asciidoctor.jvm.pdf'
+	id 'org.asciidoctor.jvm.convert'
+	id 'org.asciidoctor.jvm.gems'	
+}
+
+repositories  {
+	ruby.gems()
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+	asciidoctorGems "rubygems:rouge:3.15.0"
+	asciidoctorGems "rubygems:asciidoctor-diagram:2.2.2"
+}
+
+def pdfFile = layout.buildDirectory.file("docs/asciidocPdf/" + project.name + ".pdf")
+def pdfArtifact = artifacts.add('archives', pdfFile.get().asFile) {
+	type 'pdf'
+	builtBy asciidoctorPdf
+}
+
+group = 'de.thpeetz'
+final BUILD_DATE = new Date().format('dd.MM.yyyy').toString()
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group + '.docs'
+            artifactId = project.name
+            artifact pdfArtifact
+        }
+    }
+    repositories {
+    }
+}
+
+asciidoctorPdf {
+	dependsOn asciidoctorGemsPrepare
+
+	baseDirFollowsSourceFile()
+
+	asciidoctorj {
+		requires 'rouge', 'asciidoctor-diagram'
+		attributes 'build-gradle':       file('build.gradle'),
+				   'endpoint-url':       'https://www.thpeetz.de',
+				   'source-highlighter': 'rouge',
+				   'imagesdir':          './images',
+				   'toc':                'left',
+				   'toc-title':          'Inhaltsverzeichnis',
+				   'revdate':            BUILD_DATE,
+				   'revnumber':          { project.version.toString() },
+				   'revremark':          'Entwurf',
+				   'chapter-label':      '',
+				   'icons':              'font',
+				   'idprefix':           'id_',
+				   'idseparator':        '-',
+				   'docinfo1':           ''
+	}
+}
